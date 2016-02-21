@@ -1,6 +1,0 @@
-*.DS_Store
-*.Rhistory
-*.RData
-CodeBook_cache
-train/Inertial Signals/
-test/Inertial Signals/
