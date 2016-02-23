@@ -6,8 +6,8 @@ output: html_document
 
 ```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-require(dplyr)
-require(tidyr)
+library(dplyr)
+library(tidyr)
 ```
 Wrangling performed on the [Samsung Galaxy S smartphone dataset](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip) provided by UCI.
 The following code will:
