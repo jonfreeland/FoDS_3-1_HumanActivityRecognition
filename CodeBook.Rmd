@@ -6,6 +6,7 @@ output: html_document
 
 ```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(readr)
 library(dplyr)
 library(tidyr)
 ```
@@ -22,27 +23,27 @@ The following code will:
 
 Read in the activity labels and features.
 ```{r, cache=TRUE}
-activities <- read.table("activity_labels.txt", quote="\"", comment.char="")
-features <- read.table("features.txt", quote="\"", comment.char="")
+activities <- read_table("activity_labels.txt", col_names = FALSE)
+features <- read_delim("features.txt", delim = " ", col_names = FALSE)
 ```
 
 Create and execute a function to ingest the training and test data sets, including only mean and standard deviation columns.
 ```{r, cache=TRUE}
 ingest_data <- function(setType) {
   # read in data
-  subject <- read.table(paste(setType,"/subject_",setType,".txt",sep=""), quote="\"", comment.char="")
-  x <- read.table(paste(setType,"/X_",setType,".txt",sep=""), quote="\"", comment.char="")
-  y <- read.table(paste(setType,"/y_",setType,".txt",sep=""), quote="\"", comment.char="")
+  subject <- read_table(paste0(setType,"/subject_",setType,".txt"), col_names = FALSE)
+        x <- read_table(paste0(setType,"/X_",setType,".txt"), col_names = FALSE)
+        y <- read_table(paste0(setType,"/y_",setType,".txt"), col_names = FALSE)
   # transpose features and assign as column names
-  colnames(x) <- t(features[c(2)])
+  colnames(x) <- t(features[2])
   # select mean|std columns only
   x_select <- x %>% subset(select = grep("mean\\(\\)|std\\(\\)", names(x)))
   # add subject column
-  x_select$SubjectId <- subject$V1
+  x_select$SubjectId <- subject$X1
   # assign source type column
   x_select$SourceSet <- setType
   # add activity ID column
-  x_select$ActivityLabel <- y$V1
+  x_select$ActivityLabel <- y$X1
   return(x_select)
 }
 

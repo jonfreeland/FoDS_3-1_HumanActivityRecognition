@@ -78,24 +78,24 @@ img {
 </ul>
 <hr />
 <p>Read in the activity labels and features.</p>
-<pre class="r"><code>activities &lt;- read.table(&quot;activity_labels.txt&quot;, quote=&quot;\&quot;&quot;, comment.char=&quot;&quot;)
-features &lt;- read.table(&quot;features.txt&quot;, quote=&quot;\&quot;&quot;, comment.char=&quot;&quot;)</code></pre>
+<pre class="r"><code>activities &lt;- read_table(&quot;activity_labels.txt&quot;, col_names = FALSE)
+features &lt;- read_delim(&quot;features.txt&quot;, delim = &quot; &quot;, col_names = FALSE)</code></pre>
 <p>Create and execute a function to ingest the training and test data sets, including only mean and standard deviation columns.</p>
 <pre class="r"><code>ingest_data &lt;- function(setType) {
   # read in data
-  subject &lt;- read.table(paste(setType,&quot;/subject_&quot;,setType,&quot;.txt&quot;,sep=&quot;&quot;), quote=&quot;\&quot;&quot;, comment.char=&quot;&quot;)
-  x &lt;- read.table(paste(setType,&quot;/X_&quot;,setType,&quot;.txt&quot;,sep=&quot;&quot;), quote=&quot;\&quot;&quot;, comment.char=&quot;&quot;)
-  y &lt;- read.table(paste(setType,&quot;/y_&quot;,setType,&quot;.txt&quot;,sep=&quot;&quot;), quote=&quot;\&quot;&quot;, comment.char=&quot;&quot;)
+  subject &lt;- read_table(paste0(setType,&quot;/subject_&quot;,setType,&quot;.txt&quot;), col_names = FALSE)
+        x &lt;- read_table(paste0(setType,&quot;/X_&quot;,setType,&quot;.txt&quot;), col_names = FALSE)
+        y &lt;- read_table(paste0(setType,&quot;/y_&quot;,setType,&quot;.txt&quot;), col_names = FALSE)
   # transpose features and assign as column names
-  colnames(x) &lt;- t(features[c(2)])
+  colnames(x) &lt;- t(features[2])
   # select mean|std columns only
   x_select &lt;- x %&gt;% subset(select = grep(&quot;mean\\(\\)|std\\(\\)&quot;, names(x)))
   # add subject column
-  x_select$SubjectId &lt;- subject$V1
+  x_select$SubjectId &lt;- subject$X1
   # assign source type column
   x_select$SourceSet &lt;- setType
   # add activity ID column
-  x_select$ActivityLabel &lt;- y$V1
+  x_select$ActivityLabel &lt;- y$X1
   return(x_select)
 }
 
