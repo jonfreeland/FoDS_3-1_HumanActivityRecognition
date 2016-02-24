@@ -35,7 +35,7 @@ ingest_data <- function(setType) {
         x <- read_table(paste0(setType,"/X_",setType,".txt"), col_names = FALSE)
         y <- read_table(paste0(setType,"/y_",setType,".txt"), col_names = FALSE)
   # transpose features and assign as column names
-  colnames(x) <- t(features[2])
+  colnames(x) <- features[[2]]
   # select mean|std columns only
   x_select <- x %>% subset(select = grep("mean\\(\\)|std\\(\\)", names(x)))
   # add subject column
@@ -66,7 +66,7 @@ write.csv(combinedDataJoined, file = "combinedDataJoined.csv")
 Tidy up the data and export a data set of mean values by activity/subject.
 ```{r}
 combinedDataTidy <- gather(combinedDataJoined, "Feature", "Value", 2:67)
-groupedDataMeans <- combinedDataTidy %>% group_by(ActivityLabel, SubjectId, ActivityName, Feature) %>% summarise(mean = mean(Value))
+groupedDataMeans <- combinedDataTidy %>% group_by_(c("ActivityLabel", "SubjectId", "ActivityName", "Feature")) %>% summarise(mean = mean(Value))
 write.csv(groupedDataMeans, file = "groupedDataMeans.csv")
 ```
 

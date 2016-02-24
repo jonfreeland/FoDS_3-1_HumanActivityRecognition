@@ -87,7 +87,7 @@ features &lt;- read_delim(&quot;features.txt&quot;, delim = &quot; &quot;, col_n
         x &lt;- read_table(paste0(setType,&quot;/X_&quot;,setType,&quot;.txt&quot;), col_names = FALSE)
         y &lt;- read_table(paste0(setType,&quot;/y_&quot;,setType,&quot;.txt&quot;), col_names = FALSE)
   # transpose features and assign as column names
-  colnames(x) &lt;- t(features[2])
+  colnames(x) &lt;- features[[2]]
   # select mean|std columns only
   x_select &lt;- x %&gt;% subset(select = grep(&quot;mean\\(\\)|std\\(\\)&quot;, names(x)))
   # add subject column
@@ -109,7 +109,7 @@ combinedDataJoined &lt;- merge(combinedData, activities, by = &quot;ActivityLabe
 write.csv(combinedDataJoined, file = &quot;combinedDataJoined.csv&quot;)</code></pre>
 <p>Tidy up the data and export a data set of mean values by activity/subject.</p>
 <pre class="r"><code>combinedDataTidy &lt;- gather(combinedDataJoined, &quot;Feature&quot;, &quot;Value&quot;, 2:67)
-groupedDataMeans &lt;- combinedDataTidy %&gt;% group_by(ActivityLabel, SubjectId, ActivityName, Feature) %&gt;% summarise(mean = mean(Value))
+groupedDataMeans &lt;- combinedDataTidy %&gt;% group_by_(c(&quot;ActivityLabel&quot;, &quot;SubjectId&quot;, &quot;ActivityName&quot;, &quot;Feature&quot;)) %&gt;% summarise(mean = mean(Value))
 write.csv(groupedDataMeans, file = &quot;groupedDataMeans.csv&quot;)</code></pre>
 
 
